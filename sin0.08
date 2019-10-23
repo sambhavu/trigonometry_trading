@@ -1,0 +1,280 @@
+#include<algorithm>
+#include<vector>
+#include<cmath>
+#include<iostream>
+
+using namespace std; 
+
+const double twopi = 6.28318530718; 
+
+const int intsize = 100; 
+
+const double VAL[intsize] = {
+ 1.262760,
+1.262760,
+1.262750,
+1.262700,
+1.262920,
+1.262860,
+1.262510,
+1.262760,
+1.262750,
+1.262720,
+1.262880,
+1.262890,
+1.262810,
+1.262760,
+1.262730,
+1.262350,
+1.262380,
+1.262670,
+1.262700,
+1.262710,
+1.262710,
+1.262670,
+1.262670,
+1.262680,
+1.262460,
+1.262190,
+1.262460,
+1.262410,
+1.262910,
+1.262910,
+1.262770,
+1.262800,
+1.262700,
+1.263010,
+1.263420,
+1.263390,
+1.263300,
+1.263360,
+1.263440,
+1.263400,
+1.262800,
+1.262950,
+1.263020,
+1.262990,
+1.263020,
+1.263230,
+1.263270,
+1.262990,
+1.263100,
+1.263140,
+1.263100,
+1.263110,
+1.263110,
+1.263120,
+1.263130,
+1.263130,
+1.263160,
+1.263150,
+1.263180,
+1.263170,
+1.263520,
+1.263560,
+1.263500,
+1.263480,
+1.263670,
+1.263370,
+1.263430,
+1.263450,
+1.263460,
+1.263460,
+1.263540,
+1.263540,
+1.263470,
+1.263540,
+1.263470,
+1.263440,
+1.263480,
+1.263490,
+1.263390,
+1.263410,
+1.263330,
+1.263280,
+1.263230,
+1.263210,
+1.263230,
+1.263430,
+1.263420,
+1.263410,
+1.263400,
+1.263400,
+1.263300,
+1.263230,
+1.263440,
+1.263440,
+1.263530,
+1.263450,
+1.263520,
+1.263510,
+1.263500,
+1.263540,
+
+
+}; 
+
+
+class trader{ 
+  public: 
+  
+  double perc_change(double prev, double today); 
+  
+  double trade(int i, double position);
+  
+  double position(int today, vector<double> daily, vector<double> net, double p); 
+  
+  double hold(double p); 
+  double change(double p); 
+  
+  double getmax(); 
+  double getmin(); 
+  
+};
+
+double trader::getmax() { 
+    
+    double max;
+    int fail;
+    
+ for(int i = 0; i<intsize; i++) { 
+     fail = 0;
+     if(VAL[i]>VAL[i-1]){
+         
+         for(int j = 0; j<=i;j++){
+             if(VAL[i]<VAL[j]) {
+                 fail =1;
+                }
+             if(fail==0){
+                max = VAL[i];
+                }
+            }
+        }
+    }
+ 
+ return max; 
+    
+}
+
+double trader::getmin() { 
+    
+    double min;
+    int fail;
+    
+ for(int i = 0; i<intsize; i++) { 
+     fail = 0;
+     if(VAL[i]<VAL[i-1]){
+         
+         for(int j = 0; j<=i;j++){
+             if(VAL[i]>VAL[j]) {
+                 fail =1;
+                }
+             if(fail==0){
+                min = VAL[i];
+                }
+            }
+        }
+    }
+ 
+ return min; 
+    
+}
+
+
+double trader :: hold(double p){ 
+ return p * 1.0;
+}
+
+
+double trader :: change(double p){ 
+    return p * -1; 
+}
+
+
+double trader :: perc_change(double prev, double today)
+{
+    return (today-prev)/prev; 
+}
+
+
+
+
+double trader::trade(int i,double position){ 
+    double dailyprofit; 
+    
+    if(position>0)  //long
+    {
+        dailyprofit  = perc_change(VAL[i-1],VAL[i]) * position * VAL[i-1];
+    }
+    
+    if(position<0)  //short
+    {
+        dailyprofit = perc_change(VAL[i-1],VAL[i])*(position) * VAL[i-1]; 
+    }   
+    
+    return dailyprofit; 
+}
+
+
+
+
+
+double trader :: position(int today,vector<double> daily, vector<double> net, double p)
+{
+    double min  = getmin(); 
+    double max = getmax(); 
+    
+    double amplitude = (max-min)/2; 
+    
+    double value = amplitude*sin(today/twopi); 
+    
+    cout<<value<<"\n";
+    
+    
+    
+    return p;    
+}
+
+
+
+
+
+
+
+
+int main(){
+    
+ trader x;
+ 
+ double position, dp, pnl;
+ 
+ double p = 10000;
+ 
+ vector<double> dailyprofit;
+ vector<double> profit; 
+  
+ for(int i=1;i<intsize;i++){
+     
+    position    = x.position(i-1,dailyprofit,profit,p); 
+    p=position;
+    
+    dp = x.trade(i,position);
+    
+    pnl += dp; 
+    
+    dailyprofit.push_back(dp);
+    profit.push_back(pnl); 
+    
+   
+    
+    
+ }
+  
+
+    
+  
+ return 0;   
+}
+
+
+    
